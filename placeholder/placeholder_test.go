@@ -1,8 +1,6 @@
 package placeholder
 
 import (
-	"bytes"
-	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
 )
@@ -10,7 +8,7 @@ import (
 func TestPlaceHolder_Replace(t *testing.T) {
 	tests := []struct {
 		name        string
-		placeHolder *PlaceHolder
+		placeHolder PlaceHolder
 		content     string
 		data        map[string]string
 		want        string
@@ -46,7 +44,7 @@ func TestPlaceHolder_Replace(t *testing.T) {
 				//"nick": "zhang san",
 				"city": "China",
 			},
-			want:    "I'm ${nick},from China",
+			want:    "I'm ,from China",
 			wantErr: true,
 		},
 		{
@@ -89,7 +87,7 @@ func TestPlaceHolder_ExtractKeys(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		placeHolder *PlaceHolder
+		placeHolder PlaceHolder
 		content     string
 		wantKeys    []string
 		wantErr     bool
@@ -115,23 +113,4 @@ func TestPlaceHolder_ExtractKeys(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestReplace(t *testing.T) {
-	content, err := Replace([]byte("I'm ${nick},from ${city}"), map[string]string{
-		"nick": "ZhangSan",
-	})
-	require.Equal(t, "I'm ZhangSan,from ${city}", string(content))
-	require.Error(t, err)
-
-	mke, ok := IsMissKeysErr(err)
-	require.True(t, ok)
-	require.Equal(t, mke.Keys(), []string{"city"})
-
-	for _, k := range mke.Keys() {
-		old := DefaultPlaceholder.MakePlaceholder(k)
-		content = bytes.ReplaceAll(content, []byte(old), nil)
-	}
-	require.Equal(t, "I'm ZhangSan,from ", string(content))
-
 }
