@@ -11,10 +11,10 @@ type GoExecutor interface {
 }
 
 // PanicHandler  handle panic Executor and GoExecutor
-type PanicHandler func(recovered interface{})
+type PanicHandler func(exception interface{})
 
 // PanicRetryHandler handle panic and retry Executor and GoExecutor
-type PanicRetryHandler func(recovered interface{}, attempt uint) (retry bool)
+type PanicRetryHandler func(exception interface{}, attempt uint) (retry bool)
 
 var (
 	_ Executor = PanicHandler(nil)
